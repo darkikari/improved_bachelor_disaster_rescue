@@ -1,5 +1,6 @@
 package ch.hevs.fbonvin.disasterassistance.views.settings;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.preference.EditTextPreference;
@@ -25,12 +26,12 @@ public class ActivityPreferences extends AppCompatPreferenceActivity {
     }
 
     public static class MainPreferenceFragment extends PreferenceFragment {
-
+        private Activity mActivity;
         @Override
         public void onCreate(@Nullable Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             addPreferencesFromResource(R.xml.prefs);
-
+            mActivity = this.getActivity();
 
             bindPreferenceSummaryToValue(findPreference(getString(R.string.key_pref_user_name)));
 
@@ -53,9 +54,40 @@ public class ActivityPreferences extends AppCompatPreferenceActivity {
                     return true;
                 }
             });
+
+//            final SwitchPreference btNotif = (SwitchPreference) findPreference(this.getResources().getString(R.string.key_pref_notification_app));
+//            btNotif.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+//                @Override
+//                public boolean onPreferenceChange(Preference preference, Object o) {
+//                    if (btNotif.isChecked()) {
+//                        Toast.makeText(mActivity, "Unchecked", Toast.LENGTH_SHORT).show();
+//                        btNotif.setChecked(false);
+//                    } else {
+//                        Toast.makeText(mActivity, "Checked", Toast.LENGTH_SHORT).show();
+//                        btNotif.setChecked(true);
+//
+//                        NotificationCompat.Builder b = null;
+//                        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+//                            b = new NotificationCompat.Builder(getContext(), "M_CH_ID");
+//                        }
+//                        b.setAutoCancel(true)
+//                                .setDefaults(NotificationCompat.DEFAULT_ALL)
+//                                .setWhen(System.currentTimeMillis())
+//                                .setSmallIcon(R.drawable.logo_git)
+//                                .setTicker("{your tiny message}")
+//                                .setContentTitle("New message")
+//                                .setContentText("A new message is available in your area")
+//                                .setContentInfo("INFO");
+//
+//                        NotificationManager nm = (NotificationManager) mActivity.getSystemService(Context.NOTIFICATION_SERVICE);
+//                        nm.notify(1, b.build());
+//                    }
+//                    return false;
+//                }
+//            });
         }
     }
-    
+
 
     private static final Preference.OnPreferenceChangeListener sBindPreferenceSummaryToValueListener = new Preference.OnPreferenceChangeListener() {
         @Override
@@ -73,10 +105,9 @@ public class ActivityPreferences extends AppCompatPreferenceActivity {
                                 ? listPreference.getEntries()[index]
                                 : null);
                 preference.setSummary(val);
-            } else if (preference instanceof EditTextPreference){
+            } else if (preference instanceof EditTextPreference) {
                 preference.setSummary(val);
             }
-
 
             return true;
         }

@@ -1,5 +1,14 @@
 package ch.hevs.fbonvin.disasterassistance.utils;
 
+import android.app.Application;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.Intent;
+import android.os.Build;
+import android.support.annotation.RequiresApi;
+import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 import com.google.android.gms.nearby.connection.Payload;
@@ -7,6 +16,8 @@ import com.google.gson.Gson;
 
 import java.util.ArrayList;
 
+import ch.hevs.fbonvin.disasterassistance.MainActivity;
+import ch.hevs.fbonvin.disasterassistance.R;
 import ch.hevs.fbonvin.disasterassistance.models.Endpoint;
 import ch.hevs.fbonvin.disasterassistance.models.Message;
 
@@ -30,6 +41,22 @@ import static ch.hevs.fbonvin.disasterassistance.Constant.VALUE_PREF_APPID;
 
 public abstract class CommunicationManagement {
 
+    private static Application sApplication;
+    private static final int NOTI_PRIMARY1 = 1100;
+    private static final int NOTI_PRIMARY2 = 1101;
+    private static final int NOTI_SECONDARY1 = 1200;
+    private static final int NOTI_SECONDARY2 = 1201;
+
+
+
+
+    public static Application getApplication() {
+        return sApplication;
+    }
+
+    public static Context getContext() {
+        return getApplication().getApplicationContext();
+    }
     /**
      * Send a message to a list of recipient
      * @param sendTo list of recipient
@@ -175,14 +202,12 @@ public abstract class CommunicationManagement {
         }
     }
 
-
-
     /**
      * Handle all the payload received as byte, create new message
      * @param payload data to handle
      */
     private static void receiveMessage(String payload) {
-
+        Log.i(TAG, "New message incoming");
         Message m = getMessageFromString(payload);
 
         m.setDistance(LocationManagement.getDistance(m.getTitle(), m.getMessageLatitude(), m.getMessageLongitude()));
@@ -217,8 +242,11 @@ public abstract class CommunicationManagement {
 
         if(!MESSAGES_RECEIVED.contains(m) && !m.getCreatorAppId().equals(VALUE_PREF_APPID)){
             flagAlreadyReceived = false;
-
-            m.getMessageSentTo().add(VALUE_PREF_APPID);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                sendNotificationOreo(NOTI_PRIMARY1, "New message received");
+            } else {
+                sendNotificationOld("New message received");
+            }
 
         } else {
             Log.i(TAG, "CommunicationManagement handleNewMessages: message already received " + m.getTitle());
@@ -348,4 +376,67 @@ public abstract class CommunicationManagement {
         }
         return message;
     }
+
+    /**
+     * Send activity notifications.
+     *
+     * @param id The ID of the notification to create
+     * @param title The title of the notification
+     */
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    public static void sendNotificationOreo(int id, String text) {
+
+        NotificationHelper noti = new NotificationHelper(MainActivity.getAppContext());
+
+        Notification.Builder nb = null;
+        switch (id) {
+            case NOTI_PRIMARY1:
+                nb = noti.getNotification1(text, String.valueOf(R.string.primary1_body));
+                break;
+
+//            case NOTI_PRIMARY2:
+//                nb = noti.getNotification1(title, String.valueOf(R.string.primary2_body));
+//                break;
+
+            case NOTI_SECONDARY1:
+                nb = noti.getNotification2(text, String.valueOf(R.string.secondary1_body));
+                break;
+
+//            case NOTI_SECONDARY2:
+//                nb = noti.getNotification2(title, String.valueOf(R.string.secondary2_body));
+//                break;
+        }
+        if (nb != null) {
+            noti.notify(id, nb);
+        }
+    }
+
+    public static void sendNotificationOld(String text) {
+
+        final int MY_NOTIFICATION_ID=1;
+        NotificationManager notificationManager;
+        Notification myNotification;
+
+        Intent myIntent = new Intent(MainActivity.getAppContext(), MainActivity.class);
+        myIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        PendingIntent pendingIntent = PendingIntent.getActivity(MainActivity.getAppContext(),0, myIntent, 0);
+
+
+        myNotification = new NotificationCompat.Builder(MainActivity.getAppContext())
+                .setContentTitle("Notification from Floater")
+                .setContentText(text)
+                .setTicker("Notification!")
+                .setWhen(System.currentTimeMillis())
+                .setContentIntent(pendingIntent)
+                .setDefaults(Notification.DEFAULT_SOUND)
+                .setAutoCancel(true)
+                .setSmallIcon(R.drawable.logo_git)
+                .build();
+
+        notificationManager =
+                (NotificationManager)MainActivity.getAppContext().getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.notify(MY_NOTIFICATION_ID, myNotification);
+    }
+
 }
+

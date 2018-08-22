@@ -32,9 +32,10 @@
             android:title="About the application"
             android:key="@string/key_pref_about_app">
         </Preference>
-        <Preference
-            android:title="Allow Notification"
-            android:key="@string/key_pref_notification_app">
-        </Preference>
+        <!--<SwitchPreference-->
+            <!--android:defaultValue="false"-->
+            <!--android:title="Allow Notification"-->
+            <!--android:key="@string/key_pref_notification_app">-->
+        <!--</SwitchPreference>-->
     </PreferenceCategory>
 </PreferenceScreen>

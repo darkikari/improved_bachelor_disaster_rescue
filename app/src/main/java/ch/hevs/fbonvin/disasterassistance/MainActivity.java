@@ -1,5 +1,6 @@
 package ch.hevs.fbonvin.disasterassistance;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.location.Location;
@@ -67,6 +68,7 @@ public class MainActivity extends AppCompatActivity implements INearbyActivity{
 
     private LocationRequest mLocationRequest;
     private LocationCallback mLocationCallback;
+    private static Context appContext;
 
     /**
      * Bottom navigation fragment switching management
@@ -102,6 +104,7 @@ public class MainActivity extends AppCompatActivity implements INearbyActivity{
         PreferencesManagement.initPreferences(this);
         initButtons();
         initConstants();
+        appContext = getApplicationContext();
     }
 
     @Override
@@ -130,6 +133,10 @@ public class MainActivity extends AppCompatActivity implements INearbyActivity{
         PreferencesManagement.saveMessages(this);
     }
 
+    public static Context getAppContext(){
+        return appContext;
+    }
+
     /**
      * Initialize the important constants
      */
@@ -147,6 +154,7 @@ public class MainActivity extends AppCompatActivity implements INearbyActivity{
 
         PreferencesManagement.retrieveMessages(this);
     }
+
 
     private void initButtons() {
         //Initial configuration

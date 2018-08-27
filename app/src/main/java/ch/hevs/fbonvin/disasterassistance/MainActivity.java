@@ -3,6 +3,7 @@ package ch.hevs.fbonvin.disasterassistance;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.location.Location;
 import android.os.Bundle;
 import android.provider.Settings;
@@ -15,7 +16,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.RelativeLayout;
+import android.widget.Toolbar;
 
+import com.github.amlcurran.showcaseview.ShowcaseView;
+import com.github.amlcurran.showcaseview.targets.ViewTarget;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
@@ -97,6 +104,10 @@ public class MainActivity extends AppCompatActivity implements INearbyActivity{
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        final String SHOWCASE_ID = "1";
+
+        Toolbar toolbar;
         setTheme(R.style.AppTheme);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
@@ -105,6 +116,9 @@ public class MainActivity extends AppCompatActivity implements INearbyActivity{
         initButtons();
         initConstants();
         appContext = getApplicationContext();
+
+        showcaseDialogTutorial();
+
     }
 
     @Override
@@ -192,7 +206,6 @@ public class MainActivity extends AppCompatActivity implements INearbyActivity{
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
                                 startActivity(intent);
-
                             }
                         })
                         .setCancelable(false)
@@ -309,5 +322,92 @@ public class MainActivity extends AppCompatActivity implements INearbyActivity{
     @Override
     public void nearbyOk() {
         Snackbar.make(findViewById(R.id.snack_place), R.string.main_activity_google_nearby_launched, Snackbar.LENGTH_LONG).show();
+    }
+
+    private void showcaseDialogTutorial(){
+
+        final ShowcaseView ShowcaseView;
+
+        final SharedPreferences tutorialShowcases = getSharedPreferences("showcaseTutorial", MODE_PRIVATE);
+
+        boolean run;
+
+        run = tutorialShowcases.getBoolean("run?", true);
+
+        if(run){//If the buyer already went through the showcases it won't do it again.
+            final ViewTarget step1 = new ViewTarget(R.id.nav_messages , this);//Variable holds the item that the showcase will focus on.
+            final ViewTarget step2 = new ViewTarget(R.id.nav_map, this);
+            final ViewTarget step3 = new ViewTarget(R.id.fab_add_message_list , this);
+//            final ViewTarget  = new ViewTarget(R.id. , this);
+//            final ViewTarget  = new ViewTarget(R.id. , this);
+//            final ViewTarget  = new ViewTarget(R.id. , this);
+//            final ViewTarget  = new ViewTarget(R.id. , this);
+//            final ViewTarget  = new ViewTarget(R.id. , this);
+//            final ViewTarget  = new ViewTarget(R.id. , this);
+//            final ViewTarget  = new ViewTarget(R.id. , this);
+//            final ViewTarget  = new ViewTarget(R.id. , this);
+
+
+            //This code creates a new layout parameter so the button in the showcase can move to a new spot.
+            final RelativeLayout.LayoutParams lps = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            // This aligns button to the bottom left side of screen
+            lps.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+            lps.addRule(RelativeLayout.ALIGN_LEFT);
+            // Set margins to the button, we add 16dp margins here
+            int margin = ((Number) (getResources().getDisplayMetrics().density * 16)).intValue();
+            lps.setMargins(margin, margin, margin, margin);
+
+
+            //This creates the first showcase.
+            ShowcaseView = new ShowcaseView.Builder(this)
+                    .withMaterialShowcase()
+                    .setContentTitle("Welcome on the tutorial")
+                    .setContentText("This tutorial will show you the main part of the application")
+                    .setStyle(2)
+                    .build();
+            ShowcaseView.setButtonText("next");
+
+
+            //When the button is clicked then the switch statement will check the counter and make the new showcase.
+            ShowcaseView.overrideButtonClick(new View.OnClickListener() {
+                int count1 = 0;
+
+                @Override
+                public void onClick(View v) {
+                    count1++;
+                    switch (count1) {
+                        case 1:
+                            ShowcaseView.setTarget(step1);
+                            ShowcaseView.setContentTitle("Titre du step 1");
+                            ShowcaseView.setContentText("Texte du step 1");
+                            ShowcaseView.setButtonText("next");
+                            break;
+
+                        case 2:
+                            ShowcaseView.setTarget(step2);
+                            ShowcaseView.setContentTitle("Titre du step 2");
+                            ShowcaseView.setContentText("Text du step 2");
+                            ShowcaseView.setButtonText("next");
+                            ShowcaseView.setButtonPosition(lps);
+                            break;
+
+//                        case 3:
+//                            ShowcaseView.setTarget(step3);
+//                            ShowcaseView.setContentTitle("New message");
+//                            ShowcaseView.setContentText("This button allow to create a new message");
+//                            ShowcaseView.setButtonText("next");
+//                            break;
+
+                        case 3:
+                            SharedPreferences.Editor tutorialShowcasesEdit = tutorialShowcases.edit();
+                            tutorialShowcasesEdit.putBoolean("run?", false);
+                            tutorialShowcasesEdit.apply();
+
+                            ShowcaseView.hide();
+                            break;
+                    }
+                }
+            });
+        }
     }
 }

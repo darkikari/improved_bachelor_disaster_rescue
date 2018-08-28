@@ -337,7 +337,7 @@ public class MainActivity extends AppCompatActivity implements INearbyActivity{
         if(run){//If the buyer already went through the showcases it won't do it again.
             final ViewTarget step1 = new ViewTarget(R.id.nav_messages , this);//Variable holds the item that the showcase will focus on.
             final ViewTarget step2 = new ViewTarget(R.id.nav_map, this);
-            final ViewTarget step3 = new ViewTarget(R.id.fab_add_message_list , this);
+            //final ViewTarget step3 = new ViewTarget(R.id. , this);
 //            final ViewTarget  = new ViewTarget(R.id. , this);
 //            final ViewTarget  = new ViewTarget(R.id. , this);
 //            final ViewTarget  = new ViewTarget(R.id. , this);

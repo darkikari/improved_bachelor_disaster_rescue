@@ -55,36 +55,6 @@ public class ActivityPreferences extends AppCompatPreferenceActivity {
                 }
             });
 
-//            final SwitchPreference btNotif = (SwitchPreference) findPreference(this.getResources().getString(R.string.key_pref_notification_app));
-//            btNotif.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
-//                @Override
-//                public boolean onPreferenceChange(Preference preference, Object o) {
-//                    if (btNotif.isChecked()) {
-//                        Toast.makeText(mActivity, "Unchecked", Toast.LENGTH_SHORT).show();
-//                        btNotif.setChecked(false);
-//                    } else {
-//                        Toast.makeText(mActivity, "Checked", Toast.LENGTH_SHORT).show();
-//                        btNotif.setChecked(true);
-//
-//                        NotificationCompat.Builder b = null;
-//                        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
-//                            b = new NotificationCompat.Builder(getContext(), "M_CH_ID");
-//                        }
-//                        b.setAutoCancel(true)
-//                                .setDefaults(NotificationCompat.DEFAULT_ALL)
-//                                .setWhen(System.currentTimeMillis())
-//                                .setSmallIcon(R.drawable.logo_git)
-//                                .setTicker("{your tiny message}")
-//                                .setContentTitle("New message")
-//                                .setContentText("A new message is available in your area")
-//                                .setContentInfo("INFO");
-//
-//                        NotificationManager nm = (NotificationManager) mActivity.getSystemService(Context.NOTIFICATION_SERVICE);
-//                        nm.notify(1, b.build());
-//                    }
-//                    return false;
-//                }
-//            });
         }
     }
 

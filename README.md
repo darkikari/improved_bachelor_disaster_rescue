@@ -1,4 +1,4 @@
-# Floater - Ad Hoc disaster communication
+# Floater - A Floating Content App for Situation Awareness
 
 ![play_store_banner](https://user-images.githubusercontent.com/18733561/43368438-40462a10-935d-11e8-9bd8-31051be13876.png)
 
@@ -24,4 +24,4 @@ This is why this application was developed. It uses Google Nearby to allow offli
   * Correct delay time
   
 ## Meta
-Flavien Bonvin - [LinkedIn](https://www.linkedin.com/in/flavien-bonvin/)
+Flavien Bonvin, Francois Steiner, Yann Bocchi, and Gianluca Rizzo - 2018
